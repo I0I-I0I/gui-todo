@@ -1,5 +1,7 @@
 import tkinter as tk
 
+from scripts.components.Entry import Entry
+
 
 class HomePage(tk.Frame):
     def __init__(self, parent, container) -> None:
@@ -7,6 +9,25 @@ class HomePage(tk.Frame):
 
         label = tk.Label(self, text="Home Page")
         label.pack(pady=0, padx=0)
+
+        Entry(self, opts={
+            "placeholder": "Project Name",
+            "bg": "#ffffff",
+            "fg": "#000000"
+        }).setup({
+            "pady": 10
+        })
+
+        Entry(self, opts={
+            "placeholder": "ToDo Name",
+            "bg": "#ffffff",
+            "fg": "#000000"
+        }).setup({
+            "pady": 10
+        })
+
+        button = tk.Button(self, text="Next", command=lambda: parent.show_frame(parent.Validation))
+        button.pack(pady=10)
 
     def create_menubar(self, parent):
         menubar = tk.Menu(parent, bd=3, relief=tk.RAISED, activebackground="#80B9DC")
