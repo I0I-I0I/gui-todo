@@ -30,7 +30,7 @@ class App(tk.Tk):
         self.frames = {}
         self.HomePage = HomePage
 
-        frame = HomePage(self, container)
+        frame = HomePage(container)
         self.frames[HomePage] = frame
         frame.grid(row=0, column=0, sticky="nsew")
         self.show_frame(HomePage)

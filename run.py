@@ -6,7 +6,7 @@ opts: Opts = {
     "title": "ToDo Application",
     "width": 720,
     "height": 550,
-    "bg": "#191919"
+    "bg": "#000000"
 }
 
 app = App(opts)
