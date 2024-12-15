@@ -37,7 +37,7 @@ class App(tk.Tk):
 
     def show_frame(self, container: type) -> None:
         frame = self.frames[container]
-        menubar = frame.create_menubar(self)
-        self.configure(menu=menubar)
+        # menubar = frame.create_menubar(self)
+        # self.configure(menu=menubar)
         frame.tkraise()
 

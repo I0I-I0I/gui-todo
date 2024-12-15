@@ -1,8 +1,11 @@
 import tkinter as tk
 
+from typing import Any
+
 from scripts.components.Entry import Opts as OptsEntry
 from scripts.components.Column import Column, Opts as ColumnOpts, StateType
 from scripts.components.Todo import Todo, TodoType
+from scripts.utils.DragManager import AriasType, CursorCoordsType, DragManager, PointType
 
 
 columns: dict[StateType, ColumnOpts] = {
@@ -46,44 +49,54 @@ todo_list: list[TodoType] = [
     },
 ]
 
+def get_coords(target: Any) -> PointType:
+    x_from = target.winfo_x()
+    x_to = x_from + target.winfo_width()
+    y_from = target.winfo_y()
+    y_to = y_from + 600
+    return {
+        "x": (x_from, x_to),
+        "y": (y_from, y_to)
+    }
+
 
 class HomePage(tk.Frame):
     def __init__(self, master: tk.Frame) -> None:
         super().__init__(master)
 
+        self.window_size: dict[str, int] = {
+            "width": master.winfo_screenwidth(),
+            "height": master.winfo_screenheight()
+        }
         self.columns: dict[StateType, Column] = self._create_columns(columns)
-        todo_opts: OptsEntry = {
+        self.todo_opts: OptsEntry = {
             "placeholder": "Add a task",
             "bg": "#ffffff",
             "fg": "#000000",
             "state": "normal",
         }
+        self.arias: AriasType = {}
 
+        def s(event):
+            for column in self.columns:
+                self.arias[column] = get_coords(self.columns[column])
+
+        def on_drop(target, coords: CursorCoordsType) -> None:
+            print(target)
+            print(self.arias)
+
+        for column in self.columns:
+            dnd = DragManager(self.columns[column], self.arias)
+            dnd.add_draggable(on_drop)
+
+        self.create_todo_list(self.todo_opts)
+        self.columns["todo"].bind("<Visibility>", s)
+
+    def create_todo_list(self, todo_opts: OptsEntry) -> None:
         for todo_data in todo_list:
             current_column = self.columns[todo_data["state"]]
-            todo: Todo = Todo(current_column, todo_data, todo_opts)
+            todo: Todo = Todo(current_column, todo_data, todo_opts).create()
             current_column.push(todo)
-
-    def create_menubar(self, parent):
-        menubar = tk.Menu(parent, bd=3, relief=tk.RAISED, activebackground="#80B9DC")
-
-        filemenu = tk.Menu(menubar, tearoff=0, relief=tk.RAISED, activebackground="#026AA9")
-        menubar.add_cascade(label="File", menu=filemenu)
-        filemenu.add_command(label="New Project", command=lambda: parent.show_frame(parent.Validation))
-        filemenu.add_command(label="Close", command=lambda: parent.show_frame(parent.HomePage))
-        filemenu.add_separator()
-        filemenu.add_command(label="Exit", command=parent.quit)
-
-        processing_menu = tk.Menu(menubar, tearoff=0)
-        menubar.add_cascade(label="Validation", menu=processing_menu)
-        processing_menu.add_command(label="validate")
-        processing_menu.add_separator()
-
-        help_menu = tk.Menu(menubar, tearoff=0)
-        menubar.add_cascade(label="Help", menu=help_menu)
-        help_menu.add_separator()
-
-        return menubar
 
     def _create_columns(self, columns_list: dict[StateType, ColumnOpts]) -> dict[StateType, Column]:
         columns: dict[StateType, Column] = {}

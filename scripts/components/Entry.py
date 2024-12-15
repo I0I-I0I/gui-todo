@@ -12,6 +12,7 @@ class Opts(TypedDict):
     width: NotRequired[int]
     font: NotRequired[tuple[str, int]]
     state: NotRequired[StateType]
+    justify: NotRequired[str]
 
 
 class Entry(tk.Entry):
@@ -31,7 +32,6 @@ class Entry(tk.Entry):
                 custom_opts_list.append(key)
                 continue
             self.opts[key] = opts[key]
-        self.config(self.opts)
 
         for key in custom_opts_list:
             if key in self.custom_opts:
@@ -40,11 +40,15 @@ class Entry(tk.Entry):
         if "text" in opts:
             self.set_text(opts["text"])
 
+        self.config(self.opts)
+
+    def get_value(self) -> str:
+        return self.get()
+
     def set_placeholder(self, placeholder: str):
         self.set_text(placeholder)
         self.bind("<FocusIn>", self._on_focus_in)
         self.bind("<FocusOut>", self._on_focus_out)
-        self.config(fg = "grey")
         self.custom_opts["placeholder"]["value"] = placeholder
 
     def set_text(self, text) -> None:
@@ -52,24 +56,24 @@ class Entry(tk.Entry):
         self.insert(0, text)
 
     def _set_state(self, state: StateType) -> None:
-        self.config(state=state)
+        self.opts["state"] = state
         if state == "readonly":
-            self.config(cursor="arrow")
-        elif state == "normal":
-            self.config(fg="black")
+            self.opts["cursor"] ="arrow"
+            self.opts["readonlybackground"] = self.opts["bg"]
         elif state == "disabled":
-            self.config(fg="grey", bg="grey")
-            self.config(cursor="arrow")
+            self.opts["fg"] = "grey",
+            self.opts["bg"] = "grey",
+            self.opts["cursor"] = "arrow"
 
     def _on_focus_in(self, _) -> None:
         if self.get() == self.custom_opts["placeholder"]["value"]:
             self.delete(0, tk.END)
-            self.config(fg='black')
+            self.config(fg="black")
 
     def _on_focus_out(self, _) -> None:
         if self.get() == "":
             self.insert(0, self.custom_opts["placeholder"]["value"])
-            self.config(fg='grey')
+            self.config(fg="grey")
 
     def _get_custom_opts(self) -> Mapping[str, Any]:
         return {
