@@ -1,4 +1,5 @@
 import tkinter as tk
+from scripts.db.main import Db
 from scripts.pages.HomePage import HomePage
 
 from typing import NotRequired, TypedDict
@@ -16,9 +17,14 @@ class App(tk.Tk):
     def __init__(self, opts: Opts) -> None:
         super().__init__()
 
+        db = Db("./db/db.sqlite3")
+        print(db.get_by_id("todos", "2"))
+        db.close()
+
         self.title(opts["title"])
         self.geometry(f"{opts["width"]}x{opts["height"]}")
         self.resizable(True, True)
+
         if "icon" in opts:
             self.iconphoto(False, tk.PhotoImage(file=opts["icon"]))
 
@@ -30,7 +36,9 @@ class App(tk.Tk):
         self.frames = {}
         self.HomePage = HomePage
 
-        frame = HomePage(container)
+        frame = HomePage(container, {
+            "bg": opts["bg"]
+        })
         self.frames[HomePage] = frame
         frame.grid(row=0, column=0, sticky="nsew")
         self.show_frame(HomePage)
