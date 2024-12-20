@@ -73,6 +73,7 @@ class Todo(tk.Frame):
 
         self.popup_entry = tk.Entry(self.popup, width=30)
         self.popup_entry.pack(pady=5)
+        self.popup_entry.insert(0, self.entry.get())
 
         self.save_button = tk.Button(self.popup, text="Save", command=self.save_todo)
         self.save_button.pack(pady=5)

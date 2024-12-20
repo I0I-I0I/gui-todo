@@ -12,7 +12,7 @@ class Column(tk.Frame):
 
         self.elements: list[tk.Widget] = []
 
-        tk.Label(self, text=opts["title"], font=("Arial", 20)).pack()
+        tk.Label(self, text=opts["title"], font=("Arial", 20), width=23).pack()
         self.grid(row=0, column=opts["index"], sticky="nsew")
 
     def push(self, el: Any):

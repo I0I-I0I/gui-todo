@@ -4,6 +4,7 @@ from typing import Any
 
 class Db():
     def __init__(self, db_name: str) -> None:
+        self.db_name = db_name
         self.conn = db.connect(db_name)
         self.cursor = self.conn.cursor()
 
@@ -39,3 +40,22 @@ class Db():
 
     def close(self) -> None:
         self.conn.close()
+
+    def create_db(self) -> None:
+        try:
+            with open(self.db_name, "x") as file:
+                file.write("File created successfully!")
+            print(f"{self.db_name} has been created.")
+        except FileExistsError: pass
+
+        query = """
+            create table if not exists todos (
+                id integer primary key autoincrement,
+                ordering int not null,
+                state text not null,
+                title text not null,
+                date timestamp default current_timestamp not null
+            )
+        """
+        self.cursor.execute(query)
+        self.conn.commit()
