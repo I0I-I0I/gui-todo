@@ -7,7 +7,7 @@ class Db():
         self.conn = db.connect(db_name)
         self.cursor = self.conn.cursor()
 
-    def get_all(self, table: str) -> list[Any]:
+    def get_all(self, table: str) -> Any:
         query = f"select * from {table}"
         self.cursor.execute(query)
         return self.cursor.fetchall()

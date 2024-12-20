@@ -1,28 +1,14 @@
 import tkinter as tk
-from scripts.db.main import Db
 from scripts.pages.HomePage import HomePage
 
-from typing import NotRequired, TypedDict
-
-
-class Opts(TypedDict):
-    title: str
-    width: int
-    height: int
-    bg: str
-    icon: NotRequired[str]
+from scripts.types import AppOpts
 
 
 class App(tk.Tk):
-    def __init__(self, opts: Opts) -> None:
+    def __init__(self, opts: AppOpts) -> None:
         super().__init__()
 
-        db = Db("./db/db.sqlite3")
-        print(db.get_by_id("todos", "2"))
-        db.close()
-
         self.title(opts["title"])
-        self.geometry(f"{opts["width"]}x{opts["height"]}")
         self.resizable(True, True)
 
         if "icon" in opts:

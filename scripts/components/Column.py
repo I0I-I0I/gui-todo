@@ -1,31 +1,31 @@
 import tkinter as tk
 
-from typing import Any, Literal, NotRequired, TypedDict
+from typing import Any
 
-
-StateType = Literal["done", "in progress", "todo"]
-
-class Opts(TypedDict):
-    index: int
-    uniform: str
-    title: str
-    weight: NotRequired[int]
-    bg: NotRequired[str]
-    fg: NotRequired[str]
+from scripts.types import ColumnOpts
 
 
 class Column(tk.Frame):
-    def __init__(self, master: tk.Frame, opts: Opts) -> None:
+    def __init__(self, master: tk.Widget, opts: ColumnOpts) -> None:
         master.grid_columnconfigure(opts["index"], weight=1)
         super().__init__(master)
 
-        self.elements: list[Any] = []
+        self.elements: list[tk.Widget] = []
 
         tk.Label(self, text=opts["title"], font=("Arial", 20)).pack()
         self.grid(row=0, column=opts["index"], sticky="nsew")
 
     def push(self, el: Any):
         self.elements.append(el)
+
+    def get_elements_count(self) -> int:
+        return len(self.elements)
+
+    def remove_all_elements(self) -> None:
+        for idx in self.elements:
+            idx.destroy()
+        for idx in range(self.get_elements_count()):
+            self.elements.pop(0)
 
     def get_element(self, index: int) -> Any:
         return self.elements[index]

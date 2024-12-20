@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-from scripts.app import Opts, App
+from scripts.app import AppOpts, App
 
 
-opts: Opts = {
+opts: AppOpts = {
     "title": "ToDo Application",
     "width": 720,
     "height": 550,
